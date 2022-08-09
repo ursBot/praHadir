@@ -17,16 +17,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -37,8 +48,11 @@ public class HomeFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String USERID, USERNAME, USEREMAIL;
     EditText inputGrupBaru;
-    FirestoreRecyclerOptions<Grup>options;
-    FirestoreRecyclerAdapter<Grup,GrupAdapter>adapter;
+    //FirestoreRecyclerOptions<Grup>options;
+    //FirestoreRecyclerAdapter<Grup,GrupAdapter>adapter;
+
+    private GrupAdapter grupAdapter;
+    private final ArrayList<Grup> grupList = new ArrayList<>();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -61,6 +75,7 @@ public class HomeFragment extends Fragment {
         MakeColecctionUser();
         CekUsername();
         TeksBelumPunyaGrup();
+        FetchGrup();
         GrupView();
         buttonGrupBaru.setOnClickListener(view1 -> GrupBaru());
 
@@ -100,33 +115,29 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.GrupView)
-    RecyclerView grupView;
-    private void GrupView(){
-        grupView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        grupView.setHasFixedSize(true);
-
+    private void FetchGrup(){
         CollectionReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup-Owner");
 
-        options = new FirestoreRecyclerOptions.Builder<Grup>().setQuery(grupOwnerRoute,Grup.class).build();
-        adapter = new FirestoreRecyclerAdapter<Grup, GrupAdapter>(options) {
-            @SuppressLint("SetTextI18n")
+        grupOwnerRoute.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            protected void onBindViewHolder(@NonNull GrupAdapter holder, int position, @NonNull Grup model) {
-                holder.namaGrup.setText(""+model.getName());
-                holder.labelOwner;
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        grupList.add(new Grup(document.getString("name")));
+                        Log.d("debugggg1", document.getString("name"));
+                    }
+                } else {
+                    Log.d("debugggg2", "Error getting documents: ", task.getException());
+                }
             }
-
-            @NonNull
-            @Override
-            public GrupAdapter onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(getActivity()).inflate(R.layout.list_grup,parent,false);
-                return new GrupAdapter(view);
-            }
-        };
-        adapter.startListening();
-        grupView.setAdapter(adapter);
+        });
+    }
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.GrupView)
+    ListView grupView;
+    private void GrupView() {
+        grupAdapter = new GrupAdapter(getActivity(), grupList);
+        grupView.setAdapter(grupAdapter);
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -152,11 +163,9 @@ public class HomeFragment extends Fragment {
 
         grupOwnerRoute.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (queryDocumentSnapshots.isEmpty()) {
-                Log.d("debugggg", "tes");
             }
             else
             {
-                Log.d("debugggg", "tes2");
                 teksBelumPunyaGrup.setVisibility(View.INVISIBLE);
             }
         });
