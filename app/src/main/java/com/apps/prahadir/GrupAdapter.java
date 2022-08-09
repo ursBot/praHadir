@@ -20,29 +20,27 @@ import butterknife.BindView;
 
 public class GrupAdapter extends BaseAdapter {
 
-    private List<Grup> mutableGrupList;
-    private final List<Grup> staticGrupList;
+    private List<Grup> grupSet;
 
     private final LayoutInflater inflater;
 
     public GrupAdapter(Context context, List<Grup> grupList) {
-        staticGrupList = grupList;
-        this.mutableGrupList = grupList;
+        this.grupSet = grupList;
         inflater = LayoutInflater.from(context);
     }
 
     public void RefreshList() {
-        mutableGrupList = staticGrupList;
+        grupSet = grupSet;
     }
 
     @Override
     public int getCount() {
-        return mutableGrupList.size();
+        return grupSet.size();
     }
 
     @Override
     public Grup getItem(int position) {
-        return mutableGrupList.get(position);
+        return grupSet.get(position);
     }
 
     @Override
@@ -61,7 +59,7 @@ public class GrupAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) view.getTag();
         }
-        holder.name.setText(mutableGrupList.get(position).GetName());
+        holder.name.setText(grupSet.get(position).GetName());
         return view;
     }
 

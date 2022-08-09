@@ -116,18 +116,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void FetchGrup(){
-        CollectionReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup-Owner");
+        CollectionReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup");
 
-        grupOwnerRoute.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        grupList.add(new Grup(document.getString("name")));
-                        Log.d("debugggg1", document.getString("name"));
-                    }
-                } else {
-                    Log.d("debugggg2", "Error getting documents: ", task.getException());
+        grupOwnerRoute.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+            {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    grupList.add(new Grup(document.getString("name")));
                 }
             }
         });
@@ -158,11 +153,13 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.TeksBelumPunyaGrup)
     TextView teksBelumPunyaGrup;
     private void TeksBelumPunyaGrup() {
-        CollectionReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup-Owner");
+        CollectionReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup");
         Map<String, Object> grupOwnerMap = new HashMap<>();
 
         grupOwnerRoute.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            if (queryDocumentSnapshots.isEmpty()) {
+            if (queryDocumentSnapshots.isEmpty())
+            {
+                teksBelumPunyaGrup.setVisibility(View.VISIBLE);
             }
             else
             {
@@ -187,7 +184,7 @@ public class HomeFragment extends Fragment {
             if (!inputGrupBaru.getText().toString().isEmpty())
             {
                 String namaGrup = inputGrupBaru.getText().toString();
-                DocumentReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup-Owner").document();
+                DocumentReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup").document();
                 Map<String, Object> grupOwnerMap = new HashMap<>();
 
                 grupOwnerRoute.get().addOnSuccessListener(documentSnapshot -> {
@@ -196,10 +193,11 @@ public class HomeFragment extends Fragment {
                         grupOwnerMap.put("owner", true);
 
                         grupOwnerRoute.set(grupOwnerMap);
+
+                        teksBelumPunyaGrup.setVisibility(View.INVISIBLE);
                     }
                 });
 
-                teksBelumPunyaGrup.setVisibility(View.INVISIBLE);
                 dialog.dismiss();
             }
             else

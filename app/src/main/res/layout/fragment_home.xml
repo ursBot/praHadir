@@ -85,6 +85,13 @@
             android:layout_height="match_parent"
             android:layout_marginTop="10dp">
 
+            <ListView
+                android:id="@+id/GrupView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <TextView
                 android:id="@+id/TeksBelumPunyaGrup"
                 style="@style/belum"
@@ -96,26 +103,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:visibility="invisible"/>
-
-            <ScrollView
-                android:id="@+id/ScrollContent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ListView
-                    android:id="@+id/GrupView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </ScrollView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
