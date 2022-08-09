@@ -1,0 +1,75 @@
+<resources>
+    <string name="appName">praHadir!</string>
+
+    <!-- Login Fragment -->
+
+    <string name="email">Email</string>
+    <string name="masukkanEmail">Masukkan Email</string>
+
+    <string name="username">Username</string>
+    <string name="masukkanUsername">Masukkan Username</string>
+
+    <string name="password">Password</string>
+    <string name="masukkanPassword">Masukkan Password</string>
+
+    <string name="noHp">No HP</string>
+    <string name="masukkanNoHP">Masukkan No HP</string>
+
+    <string name="belumPunyaAkun">Belum Punya Akun?</string>
+    <string name="sudahPunyaAkun">Saya Sudah Punya Akun, Kembali</string>
+    <string name="daftar">Daftar</string>
+    <string name="lupaPassword">Lupa Password</string>
+    <string name="tetapLogin">Tetap Login?</string>
+
+    <string name="login">Login</string>
+
+    <string name="teksCekEmail">Masukkan Email Anda</string>
+    <string name="hintCekEmail">Email Anda</string>
+    <string name="cekEmail">Email Tidak Ditemukan</string>
+
+    <!-- Home Fragment -->
+    <string name="hai">Hai</string>
+
+    <string name="grupBaru">Buat Grup Baru</string>
+    <string name="teksBuatGrupBaru">Masukkan Nama Grup Baru</string>
+    <string name="hintBuatGrupBaru">Nama Grup Baru</string>
+
+    <string name="belumPunyaGrup">Kamu Belum Punya Grup</string>
+    <string name="belumPunyaKantor">Kamu Belum Menambahkan Kantor</string>
+    <string name="belumPunyaAbsensi">Kamu Belum Menambahkan Absensi</string>
+    <string name="belumPunyaAbsensiAnggota">Belum Ada Data Absensi</string>
+
+    <string name="owner">Owner</string>
+
+    <string name="kantorBaru">Tambah Kantor</string>
+    <string name="absensiBaru">Buat Absensi</string>
+
+    <!-- Profile Fragment -->
+    <string name="ubahProfile">Ubah Nama Profile</string>
+    <string name="teksUbahProfile">Masukkan Nama Profile Baru</string>
+    <string name="hintUbahProfile">Nama Profile Baru</string>
+
+    <string name="ubahUsername">Ubah Username</string>
+    <string name="teksUbahUsername">Masukkan Username Baru</string>
+    <string name="hintUbahUsername">Username Baru</string>
+
+    <string name="ubahPasswordd">Ubah Password</string>
+    <string name="teksUbahPassword">Masukkan Password Baru</string>
+    <string name="hintUbahPassword">Password Baru</string>
+
+    <string name="logout">Logout</string>
+    <string name="teksKonfirmasiLogout">Apakah Anda Akan Keluar</string>
+
+    <string name="tentangAplikasi">Tentang Aplikasi</string>
+    <string name="versiAplikasi">v1.0</string>
+
+
+    <!-- Button Fragment -->
+    <string name="batal">Batal</string>
+    <string name="konfirmasi">Konfirmasi</string>
+
+    <!-- Bottom Menu -->
+    <string name="absensi">Absensi</string>
+    <string name="profile">Profile</string>
+
+</resources>

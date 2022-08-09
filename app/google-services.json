@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "741686668760",
+    "project_id": "prahadir-cfd4b",
+    "storage_bucket": "prahadir-cfd4b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:741686668760:android:f45d5a394a0ce1979ed6ad",
+        "android_client_info": {
+          "package_name": "com.apps.prahadir"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "741686668760-711n6kt2a7anklbar2fn5ubngjop15r1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzqXQQ9GzG1gLApkD1Cp0Oz5__EAymvbc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "741686668760-711n6kt2a7anklbar2fn5ubngjop15r1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

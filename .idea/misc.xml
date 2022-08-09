@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_absensi_rounded.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_btn_batal.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_btn_grup.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_btn_konfirmasi.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_btn_nav.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_home_content_rounded.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_list_option.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_new_group.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_new_kantor.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/bg_profile_dialog_rounded.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/ic_close.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/ic_delete.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/ic_kurang.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/ic_new_group.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/ic_option.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/ic_tambah_orange.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/activity_home.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/activity_login.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/activity_main.xml" value="0.5" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/activity_profile.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_absensi.xml" value="0.22" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_absensi_anggota.xml" value="0.21" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_absensi_owner.xml" value="0.29045643153526973" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_daftar.xml" value="0.25" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_home_grupbaru.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_login_email.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_login_password.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_login_username.xml" value="0.25" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_profile.xml" value="0.22" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_profile_about_apps.xml" value="0.2" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_profile_logout.xml" value="0.22" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_profile_nama.xml" value="0.25" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_profile_password.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/fragment_profile_username.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_absensi.xml" value="0.5" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_grup.xml" value="0.33" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_kantor.xml" value="0.75" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_karyawan.xml" value="0.5" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_option.xml" value="0.33" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_tanggalabsen.xml" value="0.75" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/splash_screen.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/menu/bottom_nav_menu.xml" value="0.33" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
