@@ -107,7 +107,6 @@ public class GrupOwnerFragment extends Fragment {
     TextView teksBelumPunyaData;
     private void TeksBelumPunyaData() {
         CollectionReference dataRoute = db.collection("User").document(USERID).collection("Grup").document(GRUPID).collection("Data");
-        Map<String, Object> grupOwnerMap = new HashMap<>();
 
         dataRoute.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (queryDocumentSnapshots.isEmpty())

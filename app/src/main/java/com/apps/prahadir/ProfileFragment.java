@@ -2,7 +2,6 @@ package com.apps.prahadir;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,6 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,7 +30,6 @@ public class ProfileFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String USERID, USERNAME, USEREMAIL;
     private FirebaseAuth mAuth;
-    private ProgressDialog mLoadingBar;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -54,7 +53,6 @@ public class ProfileFragment extends Fragment {
         CekUsername();
 
         mAuth = FirebaseAuth.getInstance();
-        mLoadingBar = new ProgressDialog(getActivity());
 
         buttonUbahUsername.setOnClickListener(view1 -> UbahUsername());
         buttonUbahPassword.setOnClickListener(view1 -> UbahPassword());
@@ -80,12 +78,11 @@ public class ProfileFragment extends Fragment {
 
     private void CekUsername(){
         DocumentReference userRoute = db.collection("User").document(USERID);
-        Map<String, Object> userMap = new HashMap<>();
 
         userRoute.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 String currentUsername = documentSnapshot.getString("Username");
-                if (currentUsername.isEmpty())
+                if (Objects.requireNonNull(currentUsername).isEmpty())
                 {
                     teksUsername.setText(USERNAME);
                 }

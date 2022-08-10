@@ -1,8 +1,6 @@
 package com.apps.prahadir;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -10,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +25,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,13 +72,6 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getParentFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment, fragment);
-        fragmentTransaction.commit();
-    }
-
     private void MakeColecctionUser(){
         DocumentReference userRoute = db.collection("User").document(USERID);
         Map<String, Object> userMap = new HashMap<>();
@@ -97,12 +88,11 @@ public class HomeFragment extends Fragment {
 
     private void CekUsername(){
         DocumentReference userRoute = db.collection("User").document(USERID);
-        Map<String, Object> userMap = new HashMap<>();
 
         userRoute.get().addOnSuccessListener(documentSnapshot -> {
             if (documentSnapshot.exists()) {
                 String currentUsername = documentSnapshot.getString("Username");
-                if (currentUsername.isEmpty())
+                if (Objects.requireNonNull(currentUsername).isEmpty())
                 {
                     teksUsername.setText(USERNAME);
                 }
@@ -123,7 +113,7 @@ public class HomeFragment extends Fragment {
                 grupList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     grupList.add(new Grup(document.getString("nama"),
-                            document.getBoolean("owner").toString(),
+                            Objects.requireNonNull(document.getBoolean("owner")).toString(),
                             document.getString("id")));
                 }
                 grupView.setAdapter(grupAdapter);
@@ -172,7 +162,6 @@ public class HomeFragment extends Fragment {
     TextView teksBelumPunyaGrup;
     private void TeksBelumPunyaGrup() {
         CollectionReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup");
-        Map<String, Object> grupOwnerMap = new HashMap<>();
 
         grupOwnerRoute.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (queryDocumentSnapshots.isEmpty())
