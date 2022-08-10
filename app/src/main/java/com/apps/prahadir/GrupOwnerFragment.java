@@ -5,6 +5,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -23,6 +27,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +47,11 @@ public class GrupOwnerFragment extends Fragment {
 
     private DataAdapter dataAdapter;
     private final ArrayList<Data> dataList = new ArrayList<>();
+    private String id;
+    private String nama;
+
+    private AbsenAdapter absenAdapter;
+    private final ArrayList<Absen> absenList = new ArrayList<>();
 
     public GrupOwnerFragment() {
         // Required empty public constructor
@@ -53,6 +63,7 @@ public class GrupOwnerFragment extends Fragment {
         // TODO: Rename and change types of parameters
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,10 +74,13 @@ public class GrupOwnerFragment extends Fragment {
         BindExtra();
         FetchData();
         DataView();
+        Tanggal();
         buttonDataBaru.setOnClickListener(view1 -> DataBaru());
+        back.setOnClickListener(view2 -> Back());
 
         return view;
     }
+
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.NamaGrup)
     TextView namaGrup;
@@ -77,6 +91,14 @@ public class GrupOwnerFragment extends Fragment {
         GRUPOWNER = intent.getStringExtra(HomeFragment.OWNER_GRUP);
         GRUPID = intent.getStringExtra(HomeFragment.ID_GRUP);
         namaGrup.setText(GRUPNAMA);
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.BackFromGrup)
+    View back;
+    private void Back() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        startActivity(intent);
     }
 
     private void FetchData(){
@@ -98,7 +120,7 @@ public class GrupOwnerFragment extends Fragment {
     @BindView(R.id.DataView)
     ListView dataView;
     private void DataView() {
-        dataAdapter = new DataAdapter(this, dataList);
+        dataAdapter = new DataAdapter(this, dataList, USERID, GRUPNAMA);
         dataView.setAdapter(dataAdapter);
     }
 
@@ -175,5 +197,113 @@ public class GrupOwnerFragment extends Fragment {
         buttonTutup.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.Kurang)
+    View kurang;
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.Tambah)
+    View tambah;
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.Tanggal)
+    TextView tanggal;
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void Tanggal() {
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy");
+
+        Calendar c = Calendar.getInstance();
+        String dt = sdf.format(new Date());
+
+        tanggal.setText(dt);
+        tambah.setOnClickListener(view -> {
+            c.add(java.util.Calendar.DATE, 1);
+            tanggal.setText(sdf.format(c));
+        });
+        kurang.setOnClickListener(view -> {
+            c.add(java.util.Calendar.DATE, -1);
+            tanggal.setText(sdf.format(c));
+        });
+    }
+
+    private void FetchAbsen(){
+        Query absenSort = db.collection("User").document(USERID).collection("Grup").document(GRUPID).collection("Absen");
+
+        absenSort.orderBy("tanggal").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+            {
+                absenList.clear();
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    absenList.add(new Absen(document.getString("tanggal")));
+                }
+                absenView.setAdapter(absenAdapter);
+            }
+        });
+        TeksBelumPunyaAbsen();
+    }
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.AbsensiView)
+    ListView absenView;
+    private void AbsenView() {
+        absenAdapter = new AbsenAdapter(this, absenList);
+        absenView.setAdapter(absenAdapter);
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.AbsensiKosong)
+    TextView teksBelumPunyaAbsen;
+    private void TeksBelumPunyaAbsen() {
+        CollectionReference absenRoute = db.collection("User").document(USERID).collection("Grup").document(GRUPID).collection("Absen");
+
+        absenRoute.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            if (queryDocumentSnapshots.isEmpty())
+            {
+                teksBelumPunyaAbsen.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                teksBelumPunyaAbsen.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.AbsensiBaru)
+    Button buttonAbsenBaru;
+    @SuppressLint("SetTextI18n")
+    private void AbsenBaru() {
+
+
+        buttonAbsenBaru.setOnClickListener(view -> {
+            if (!inputDataBaru.getText().toString().isEmpty())
+            {
+                String namaData = inputDataBaru.getText().toString();
+                DocumentReference dataRoute = db.collection("User").document(USERID).collection("Grup").document(GRUPID).collection("Data").document();
+                Map<String, Object> dataMap = new HashMap<>();
+
+                dataRoute.get().addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        dataMap.put("nama", namaData);
+
+                        dataRoute.set(dataMap);
+
+                        FetchData();
+
+                        teksBelumPunyaData.setVisibility(View.INVISIBLE);
+                    }
+                });
+
+                DocumentReference dataIDRoute = db.collection("Grup").document(GRUPID).collection("Data").document(dataRoute.getId());
+                Map<String, Object> dataIDMap = new HashMap<>();
+                dataIDRoute.get().addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        dataIDMap.put("nama", namaData);
+
+                        dataIDRoute.set(dataIDMap);
+                    }
+                });
+            }
+        });
     }
 }
