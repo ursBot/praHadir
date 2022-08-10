@@ -1,9 +1,8 @@
 package com.apps.prahadir;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -20,24 +19,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseOptions;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -48,8 +37,11 @@ public class HomeFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     private String USERID, USERNAME, USEREMAIL;
     EditText inputGrupBaru;
-    //FirestoreRecyclerOptions<Grup>options;
-    //FirestoreRecyclerAdapter<Grup,GrupAdapter>adapter;
+
+    public static final String USER_ID = "UserID";
+    public static final String NAMA_GRUP = "NamaGrup";
+    public static final String ID_GRUP = "IDGrup";
+    public static final String OWNER_GRUP = "OwnerGrup";
 
     private GrupAdapter grupAdapter;
     private final ArrayList<Grup> grupList = new ArrayList<>();
@@ -72,14 +64,21 @@ public class HomeFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         BindExtra();
-        MakeColecctionUser();
-        CekUsername();
-        TeksBelumPunyaGrup();
         FetchGrup();
         GrupView();
+        MakeColecctionUser();
+        CekUsername();
         buttonGrupBaru.setOnClickListener(view1 -> GrupBaru());
+        ClickGrup();
 
         return view;
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment, fragment);
+        fragmentTransaction.commit();
     }
 
     private void MakeColecctionUser(){
@@ -116,23 +115,42 @@ public class HomeFragment extends Fragment {
     }
 
     private void FetchGrup(){
-        CollectionReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup");
+        Query grupSort = db.collection("User").document(USERID).collection("Grup");
 
-        grupOwnerRoute.get().addOnCompleteListener(task -> {
+        grupSort.orderBy("nama").get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
             {
+                grupList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    grupList.add(new Grup(document.getString("name")));
+                    grupList.add(new Grup(document.getString("nama"),
+                            document.getBoolean("owner").toString(),
+                            document.getString("id")));
                 }
+                grupView.setAdapter(grupAdapter);
             }
         });
+        TeksBelumPunyaGrup();
     }
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.GrupView)
     ListView grupView;
     private void GrupView() {
-        grupAdapter = new GrupAdapter(getActivity(), grupList);
+        grupAdapter = new GrupAdapter(this, grupList);
         grupView.setAdapter(grupAdapter);
+    }
+
+    private void ClickGrup() {
+        grupView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Grup grup = grupAdapter.getItem(i);
+            Intent intent = new Intent(getActivity(), GrupActivity.class);
+
+            intent.putExtra(USER_ID, USERID);
+            intent.putExtra(NAMA_GRUP, grup.GetNama());
+            intent.putExtra(OWNER_GRUP, grup.GetOwner());
+            intent.putExtra(ID_GRUP, grup.GetID());
+
+            startActivity(intent);
+        });
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -189,12 +207,27 @@ public class HomeFragment extends Fragment {
 
                 grupOwnerRoute.get().addOnSuccessListener(documentSnapshot -> {
                     if (!documentSnapshot.exists()) {
-                        grupOwnerMap.put("name", namaGrup);
+                        grupOwnerMap.put("nama", namaGrup);
                         grupOwnerMap.put("owner", true);
+                        grupOwnerMap.put("id", grupOwnerRoute.getId());
 
                         grupOwnerRoute.set(grupOwnerMap);
 
+                        FetchGrup();
+
                         teksBelumPunyaGrup.setVisibility(View.INVISIBLE);
+                    }
+                });
+
+                DocumentReference grupRoute = db.collection("Grup").document(grupOwnerRoute.getId());
+                Map<String, Object> grupMap = new HashMap<>();
+                grupOwnerRoute.get().addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        grupMap.put("nama", namaGrup);
+                        grupMap.put("owner", true);
+                        grupMap.put("id", grupRoute.getId());
+
+                        grupRoute.set(grupMap);
                     }
                 });
 

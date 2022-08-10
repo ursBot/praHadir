@@ -63,6 +63,15 @@
     <string name="tentangAplikasi">Tentang Aplikasi</string>
     <string name="versiAplikasi">v1.0</string>
 
+    <!-- Grup Fragment -->
+    <string name="dataGrup">Data Grup</string>
+    <string name="tambahData">Tambah Data</string>
+    <string name="dataKosong">Kamu Belum Punya Data</string>
+
+    <string name="absenKosong">Kamu Belum Punya Absensi</string>
+    <string name="dataAbsen">Data Absensi</string>
+
+    <string name="tanggal">Tanggal</string>
 
     <!-- Button Fragment -->
     <string name="batal">Batal</string>
