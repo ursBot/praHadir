@@ -9,6 +9,7 @@ import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
@@ -47,8 +49,6 @@ public class GrupOwnerFragment extends Fragment {
 
     private DataAdapter dataAdapter;
     private final ArrayList<Data> dataList = new ArrayList<>();
-    private String id;
-    private String nama;
 
     private AbsenAdapter absenAdapter;
     private final ArrayList<Absen> absenList = new ArrayList<>();
@@ -75,8 +75,10 @@ public class GrupOwnerFragment extends Fragment {
         FetchData();
         DataView();
         Tanggal();
+        ClickData();
         buttonDataBaru.setOnClickListener(view1 -> DataBaru());
         back.setOnClickListener(view2 -> Back());
+
 
         return view;
     }
@@ -120,8 +122,16 @@ public class GrupOwnerFragment extends Fragment {
     @BindView(R.id.DataView)
     ListView dataView;
     private void DataView() {
-        dataAdapter = new DataAdapter(this, dataList, USERID, GRUPNAMA);
+        dataAdapter = new DataAdapter(this, dataList);
         dataView.setAdapter(dataAdapter);
+    }
+    private void ClickData() {
+
+        dataView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Data data = dataAdapter.getItem(i);
+            Log.d("debugggg","a");
+            Toast.makeText(getContext(), "Button Clicked ", Toast.LENGTH_SHORT).show();
+        });
     }
 
     @SuppressLint("NonConstantResourceId")
