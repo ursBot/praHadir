@@ -11,6 +11,7 @@ import android.widget.Toast;
 import java.util.List;
 
 public class AbsenAdapter extends BaseAdapter {
+
     private final List<Absen> absenSet;
 
     private final LayoutInflater inflater;
@@ -40,15 +41,15 @@ public class AbsenAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        final AbsenAdapter.ViewHolder holder;
+        final ViewHolder holder;
         if (view == null) {
-            holder = new AbsenAdapter.ViewHolder();
+            holder = new ViewHolder();
             view = inflater.inflate(R.layout.list_tanggalabsen, null);
 
             holder.tanggal = (TextView) view.findViewById(R.id.TanggalAbsen);
             holder.tanggal.setText(absenSet.get(position).GetTanggal());
 
-            holder.hapus = (View) view.findViewById(R.id.Option);
+            holder.hapus = (View) view.findViewById(R.id.Hapus);
             holder.hapus.setOnClickListener(view1 -> Toast.makeText(view1.getContext(), "Button Clicked "+position, Toast.LENGTH_SHORT).show());
 
             view.setTag(holder);

@@ -81,6 +81,9 @@ public class GrupOwnerFragment extends Fragment {
         ClickData();
         buttonDataBaru.setOnClickListener(view1 -> DataBaru());
         back.setOnClickListener(view1 -> Back());
+        FetchAbsen();
+        AbsenView();
+        buttonAbsenBaru.setOnClickListener(view1 -> AbsenBaru());
 
         return view;
     }
@@ -294,36 +297,32 @@ public class GrupOwnerFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     private void AbsenBaru() {
 
-
         buttonAbsenBaru.setOnClickListener(view -> {
-            if (!inputDataBaru.getText().toString().isEmpty())
-            {
-                String namaData = inputDataBaru.getText().toString();
-                DocumentReference dataRoute = db.collection("User").document(USERID).collection("Grup").document(GRUPID).collection("Data").document();
-                Map<String, Object> dataMap = new HashMap<>();
+            String tgl = tanggal.getText().toString();
+            DocumentReference tglRoute = db.collection("User").document(USERID).collection("Grup").document(GRUPID).collection("Absen").document();
+            Map<String, Object> tglMap = new HashMap<>();
 
-                dataRoute.get().addOnSuccessListener(documentSnapshot -> {
-                    if (!documentSnapshot.exists()) {
-                        dataMap.put("nama", namaData);
+            tglRoute.get().addOnSuccessListener(documentSnapshot -> {
+                if (!documentSnapshot.exists()) {
+                    tglMap.put("nama", tgl);
 
-                        dataRoute.set(dataMap);
+                    tglRoute.set(tglMap);
 
-                        FetchData();
+                    FetchAbsen();
 
-                        teksBelumPunyaData.setVisibility(View.INVISIBLE);
-                    }
-                });
+                    teksBelumPunyaAbsen.setVisibility(View.INVISIBLE);
+                }
+            });
 
-                DocumentReference dataIDRoute = db.collection("Grup").document(GRUPID).collection("Data").document(dataRoute.getId());
-                Map<String, Object> dataIDMap = new HashMap<>();
-                dataIDRoute.get().addOnSuccessListener(documentSnapshot -> {
-                    if (!documentSnapshot.exists()) {
-                        dataIDMap.put("nama", namaData);
+            DocumentReference tglIDRoute = db.collection("Grup").document(GRUPID).collection("Absen").document(tglRoute.getId());
+            Map<String, Object> tglIDMap = new HashMap<>();
+            tglIDRoute.get().addOnSuccessListener(documentSnapshot -> {
+                if (!documentSnapshot.exists()) {
+                    tglIDMap.put("nama", tgl);
 
-                        dataIDRoute.set(dataIDMap);
-                    }
-                });
-            }
+                    tglIDRoute.set(tglIDMap);
+                }
+            });
         });
     }
 }

@@ -13,31 +13,36 @@
     android:paddingEnd="20dp">
 
     <TextView
-        android:id="@+id/TeksBaruPassword"
+        android:id="@+id/JudulDialog"
         style="@style/teksUbah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/teksUbahPassword"
-        android:layout_marginBottom="30dp"/>
+        android:text="Judul"
+        android:layout_marginBottom="10dp"/>
 
     <EditText
-        android:id="@+id/MasukkanBaruPassword"
+        android:id="@+id/InputDialog"
         style="@style/teksUbah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hintUbahPassword"
+        android:hint="Hint"
         android:textColorHint="@color/blackHint"
         android:importantForAutofill="no"
         tools:ignore="TextFields"
         android:layout_marginBottom="10dp"
-        android:inputType="textPassword"
+        android:inputType="textPersonName"
         android:backgroundTint="@color/black"/>
 
     <TextView
+        android:id="@+id/ErrorDialog"
         style="@style/teksUbah"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"/>
+        android:text="Error Message!"
+        android:textColor="@color/red"
+        android:textSize="16sp"
+        android:layout_marginBottom="10dp"
+        android:visibility="visible"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,14 +54,14 @@
             style="@style/btnBatal"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="@string/batal"/>
+            android:text="Batal"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/BtnKonfirmasi"
             style="@style/btnKonfirmasi"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:text="@string/konfirmasi"/>
+            android:text="Konfirmasi"/>
 
     </LinearLayout>
 

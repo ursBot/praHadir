@@ -7,12 +7,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -56,15 +56,13 @@ public class LoginFragment extends Fragment {
 
         mAuth=FirebaseAuth.getInstance();
         mUser = FirebaseAuth.getInstance().getCurrentUser();
-        mLoadingBar=new ProgressDialog(getActivity());
+        mLoadingBar = new ProgressDialog(getActivity());
 
         Login();
         Daftar();
         buttonLupasPassword.setOnClickListener(view1 -> LupaPassword());
 
-
         return view;
-
     }
 
     private void replaceFragment(Fragment fragment) {
@@ -78,62 +76,23 @@ public class LoginFragment extends Fragment {
     @BindView(R.id.BtnLogin)
     Button buttonLogin;
     private void Login() {
-        buttonLogin.setOnClickListener(view -> checkCrededentials());
+        buttonLogin.setOnClickListener(view -> Auth());
     }
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.BtnDaftar)
-    Button buttonDaftar;
-    private void Daftar() {
-        buttonDaftar.setOnClickListener(view -> replaceFragment(new DaftarFragment()));
-    }
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.BtnLupaPassword)
-    Button buttonLupasPassword;
-    private void LupaPassword() {
-        final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.fragment_login_email);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        Button buttonKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
-        buttonKonfirmasi.setOnClickListener(v -> {dialog.dismiss(); PasswordBaru();});
-
-        Button buttonTutup = dialog.findViewById(R.id.BtnBatal);
-        buttonTutup.setOnClickListener(v -> dialog.dismiss());
-
-        dialog.show();
-    }
-
-    private void PasswordBaru() {
-        final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.fragment_login_password);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        Button buttonKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
-        buttonKonfirmasi.setOnClickListener(v -> dialog.cancel());
-
-        Button buttonTutup = dialog.findViewById(R.id.BtnBatal);
-        buttonTutup.setOnClickListener(v -> dialog.cancel());
-
-        dialog.show();
-    }
-
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.MasukkanEmail)
     EditText inputEmail;
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.MasukkanPassword)
     EditText inputPassword;
-    private void checkCrededentials() {
+    private void Auth() {
         String email=inputEmail.getText().toString();
         String password=inputPassword.getText().toString();
 
         if (email.isEmpty()){
-            showErorr(inputEmail, "Email Salah, silahkan diisi ulang!");
+            showErorr(inputEmail, "Email Tidak Ditemukan!!");
         }
-        else if (password.isEmpty() || password.length()<=6){
-            showErorr(inputPassword, "Password Minimal 6 Karakter!");
+        else if (password.isEmpty() || password.length()<6){
+            showErorr(inputPassword, "Password Salah!");
         }
         else
         {
@@ -147,8 +106,7 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getActivity(), "Successfully Login", Toast.LENGTH_SHORT).show();
 
                     Intent intent=new Intent(getActivity(), MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    String currentID = mUser.getUid();;
+                    String currentID = mUser.getUid();
                     String currentUsername = mUser.getEmail();
                     String currentEmail = mUser.getEmail();
                     intent.putExtra(USER_ID, currentID);
@@ -163,6 +121,54 @@ public class LoginFragment extends Fragment {
                 }
             });
         }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.BtnDaftar)
+    Button buttonDaftar;
+    private void Daftar() {
+        buttonDaftar.setOnClickListener(view -> replaceFragment(new DaftarFragment()));
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.BtnLupaPassword)
+    Button buttonLupasPassword;
+    private void LupaPassword() {
+
+        judul = "Masukkan Email Anda";
+        input = "Email Anda";
+        error = "Email Tidak Ditemukan!";
+        Dialog();
+    }
+
+    String judul, input, error;
+    private void Dialog() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
+
+        TextView judulDialog = dialog.findViewById(R.id.JudulDialog);
+        EditText inputDialog = dialog.findViewById(R.id.InputDialog);
+        TextView errorDialog = dialog.findViewById(R.id.ErrorDialog);
+        Button btnBatal = dialog.findViewById(R.id.BtnBatal);
+        Button btnKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
+
+        judulDialog.setText(judul);
+        inputDialog.setHint(input);
+        errorDialog.setText(error);
+        errorDialog.setVisibility(View.GONE);
+
+        btnKonfirmasi.setOnClickListener(v -> {
+            String cek = inputDialog.getText().toString();
+            if (cek.isEmpty()){
+                errorDialog.setVisibility(View.VISIBLE);
+            }
+        });
+
+        btnBatal.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 
     private void showErorr(EditText input, String s){

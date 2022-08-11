@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,8 +43,8 @@ public class DaftarFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_daftar, container, false);
         ButterKnife.bind(this, view);
 
-        mAuth=FirebaseAuth.getInstance();
-        mLoadingBar=new ProgressDialog(getActivity());
+        mAuth = FirebaseAuth.getInstance();
+        mLoadingBar = new ProgressDialog(getActivity());
 
         Daftar();
         PunyaAkun();
@@ -64,30 +63,22 @@ public class DaftarFragment extends Fragment {
     @BindView(R.id.BtnDaftarAkun)
     Button buttonDaftar;
     private void Daftar() {
-        buttonDaftar.setOnClickListener(view -> checkCrededentials());
+        buttonDaftar.setOnClickListener(view -> Auth());
     }
-
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.BtnSudahPunyaAkun)
-    Button buttonSudahPunya;
-    private void PunyaAkun() {
-        buttonSudahPunya.setOnClickListener(view -> replaceFragment(new LoginFragment()));
-    }
-
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.MasukkanEmail)
     EditText inputEmail;
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.MasukkanPassword)
     EditText inputPassword;
-    private void checkCrededentials() {
+    private void Auth() {
         String email=inputEmail.getText().toString();
         String password=inputPassword.getText().toString();
 
-        if (email.isEmpty() || email.length()<=6){
+        if (email.isEmpty() || email.length()<6){
             showErorr(inputEmail, "Email Salah, silahkan diisi ulang!");
         }
-        else if (password.isEmpty() || password.length()<=6){
+        else if (password.isEmpty() || password.length()<6){
             showErorr(inputPassword, "Password Minimal 6 Karakter!");
         }
         else
@@ -100,18 +91,23 @@ public class DaftarFragment extends Fragment {
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()){
                     Toast.makeText(getActivity(), "Successfully Registration", Toast.LENGTH_SHORT).show();
-
-                    Intent intent=new Intent(getActivity(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    replaceFragment(new LoginFragment());
                 }
                 else
                 {
                     Toast.makeText(getActivity(), Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
                     mLoadingBar.dismiss();
                 }
+                mLoadingBar.dismiss();
             });
         }
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.BtnSudahPunyaAkun)
+    Button buttonSudahPunya;
+    private void PunyaAkun() {
+        buttonSudahPunya.setOnClickListener(view -> replaceFragment(new LoginFragment()));
     }
 
     private void showErorr(EditText input, String s){
