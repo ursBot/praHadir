@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -39,10 +40,12 @@ import butterknife.ButterKnife;
 public class GrupOwnerFragment extends Fragment {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String USERID, GRUPNAMA, GRUPOWNER, GRUPID;
+    private String USERID, USERNAME, USEREMAIL, GRUPNAMA, GRUPOWNER, GRUPID;
     EditText inputDataBaru;
 
     public static final String USER_ID = "UserID";
+    public static final String USER_USERNAME = "UserID";
+    public static final String USER_EMAIL = "UserID";
     public static final String NAMA_GRUP = "NamaGrup";
     public static final String ID_GRUP = "IDGrup";
     public static final String OWNER_GRUP = "OwnerGrup";
@@ -77,7 +80,7 @@ public class GrupOwnerFragment extends Fragment {
         Tanggal();
         ClickData();
         buttonDataBaru.setOnClickListener(view1 -> DataBaru());
-        back.setOnClickListener(view2 -> Back());
+        back.setOnClickListener(view1 -> Back());
 
         return view;
     }
@@ -88,6 +91,8 @@ public class GrupOwnerFragment extends Fragment {
     private void BindExtra(){
         Intent intent = requireActivity().getIntent();
         USERID = intent.getStringExtra(HomeFragment.USER_ID);
+        USERNAME = intent.getStringExtra(HomeFragment.USER_USERNAME);
+        USEREMAIL = intent.getStringExtra(HomeFragment.USER_EMAIL);
         GRUPNAMA = intent.getStringExtra(HomeFragment.NAMA_GRUP);
         GRUPOWNER = intent.getStringExtra(HomeFragment.OWNER_GRUP);
         GRUPID = intent.getStringExtra(HomeFragment.ID_GRUP);
@@ -99,6 +104,12 @@ public class GrupOwnerFragment extends Fragment {
     View back;
     private void Back() {
         Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.putExtra(USER_ID, USERID);
+        intent.putExtra(USER_USERNAME, USERNAME);
+        intent.putExtra(USER_EMAIL, USEREMAIL);
+        intent.putExtra(NAMA_GRUP, GRUPNAMA);
+        intent.putExtra(OWNER_GRUP, GRUPOWNER);
+        intent.putExtra(ID_GRUP, GRUPID);
         startActivity(intent);
     }
 
@@ -112,24 +123,24 @@ public class GrupOwnerFragment extends Fragment {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     dataList.add(new Data(document.getString("nama")));
                 }
-                dataView.setAdapter(dataAdapter);
+                dataView1.setAdapter(dataAdapter);
             }
         });
         TeksBelumPunyaData();
     }
+
     @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.DataView)
-    ListView dataView;
+    @BindView(R.id.DataViewOwner)
+    ListView dataView1;
     private void DataView() {
         dataAdapter = new DataAdapter(this, dataList);
-        dataView.setAdapter(dataAdapter);
+        dataView1.setAdapter(dataAdapter);
     }
-    private void ClickData() {
-        dataView.setOnItemClickListener((adapterView, view, i, l) -> {
-            Data data = dataAdapter.getItem(i);
 
-            Log.d("debugggg",data.GetNama());
-            Toast.makeText(getContext(), "Button Clicked ", Toast.LENGTH_SHORT).show();
+    private void ClickData() {
+        dataView1.setOnItemClickListener((adapterView, view, i, l) -> {
+            Data data = dataAdapter.getItem(i);
+            Toast.makeText(getActivity(), data.GetNama(), Toast.LENGTH_SHORT).show();
         });
     }
 

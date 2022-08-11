@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -38,6 +39,8 @@ public class HomeFragment extends Fragment {
     EditText inputGrupBaru;
 
     public static final String USER_ID = "UserID";
+    public static final String USER_USERNAME = "UserID";
+    public static final String USER_EMAIL = "UserID";
     public static final String NAMA_GRUP = "NamaGrup";
     public static final String ID_GRUP = "IDGrup";
     public static final String OWNER_GRUP = "OwnerGrup";
@@ -137,6 +140,8 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), GrupActivity.class);
 
             intent.putExtra(USER_ID, USERID);
+            intent.putExtra(USER_USERNAME, USERNAME);
+            intent.putExtra(USER_EMAIL, USEREMAIL);
             intent.putExtra(NAMA_GRUP, grup.GetNama());
             intent.putExtra(OWNER_GRUP, grup.GetOwner());
             intent.putExtra(ID_GRUP, grup.GetID());
@@ -157,6 +162,14 @@ public class HomeFragment extends Fragment {
         USERNAME = intent.getStringExtra(LoginFragment.USER_USERNAME);
         USEREMAIL = intent.getStringExtra(LoginFragment.USER_EMAIL);
         teksEmail.setText(USEREMAIL);
+
+
+        if(USER_ID==null){
+            USERID = intent.getStringExtra(GrupOwnerFragment.USER_ID);
+            USERNAME = intent.getStringExtra(GrupOwnerFragment.USER_USERNAME);
+            USEREMAIL = intent.getStringExtra(GrupOwnerFragment.USER_EMAIL);
+            teksEmail.setText(USEREMAIL);
+        }
     }
 
     @SuppressLint("NonConstantResourceId")

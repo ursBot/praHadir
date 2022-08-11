@@ -128,7 +128,7 @@
                     android:layout_marginBottom="10dp">
 
                     <ListView
-                        android:id="@+id/DataView"
+                        android:id="@+id/DataViewOwner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintStart_toStartOf="parent"
