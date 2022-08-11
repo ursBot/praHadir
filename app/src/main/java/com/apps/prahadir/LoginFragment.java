@@ -20,7 +20,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
@@ -33,7 +32,6 @@ public class LoginFragment extends Fragment {
     public static final String USER_USERNAME = "UserUsername";
     public static final String USER_EMAIL = "UserEmail";
     private FirebaseAuth mAuth;
-    private FirebaseUser mUser;
     private ProgressDialog mLoadingBar;
 
     public LoginFragment() {
@@ -55,7 +53,6 @@ public class LoginFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         mAuth=FirebaseAuth.getInstance();
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
         mLoadingBar = new ProgressDialog(getActivity());
 
         Login();
@@ -106,12 +103,6 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(getActivity(), "Successfully Login", Toast.LENGTH_SHORT).show();
 
                     Intent intent=new Intent(getActivity(), MainActivity.class);
-                    String currentID = mUser.getUid();
-                    String currentUsername = mUser.getEmail();
-                    String currentEmail = mUser.getEmail();
-                    intent.putExtra(USER_ID, currentID);
-                    intent.putExtra(USER_USERNAME, currentUsername);
-                    intent.putExtra(USER_EMAIL, currentEmail);
                     startActivity(intent);
                 }
                 else
@@ -134,14 +125,13 @@ public class LoginFragment extends Fragment {
     @BindView(R.id.BtnLupaPassword)
     Button buttonLupasPassword;
     private void LupaPassword() {
-
         judul = "Masukkan Email Anda";
         input = "Email Anda";
         error = "Email Tidak Ditemukan!";
         Dialog();
     }
 
-    String judul, input, error;
+    private String judul, input, error;
     private void Dialog() {
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dialog);

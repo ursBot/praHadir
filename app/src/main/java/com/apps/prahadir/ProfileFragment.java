@@ -161,7 +161,6 @@ public class ProfileFragment extends Fragment {
     private void Logout() {
         mAuth.signOut();
         Intent intent=new Intent(getActivity(), LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 

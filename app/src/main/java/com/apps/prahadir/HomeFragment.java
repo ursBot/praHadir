@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +15,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -35,8 +34,12 @@ import butterknife.ButterKnife;
 public class HomeFragment extends Fragment {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String USERID, USERNAME, USEREMAIL;
-    EditText inputGrupBaru;
+
+    FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+
+    private final String userID = Objects.requireNonNull(mUser).getUid();
+    private final String userNAME = mUser.getEmail();
+    private final String userEMAIL = mUser.getEmail();
 
     public static final String USER_ID = "UserID";
     public static final String USER_USERNAME = "UserID";
@@ -47,6 +50,10 @@ public class HomeFragment extends Fragment {
 
     private GrupAdapter grupAdapter;
     private final ArrayList<Grup> grupList = new ArrayList<>();
+
+    DocumentReference docUID = db.collection("User").document(userID);
+    CollectionReference collGrup = docUID.collection("Grup");
+    DocumentReference docGID = collGrup.document();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -65,54 +72,57 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
 
-        BindExtra();
-        CekUsername();
-        FetchGrup();
+        AddFieldDoc();
+        GetUser();
+        ReadGrup();
         GrupView();
-        MakeColecctionUser();
-        CekUsername();
-        buttonGrupBaru.setOnClickListener(view1 -> GrupBaru());
+        GrupBaru();
         ClickGrup();
 
         return view;
     }
 
-    private void MakeColecctionUser(){
-        DocumentReference userRoute = db.collection("User").document(USERID);
-        Map<String, Object> userMap = new HashMap<>();
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.TeksEmail)
+    TextView teksEmail;
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.TeksUsername)
+    TextView teksUsername;
 
-        userRoute.get().addOnSuccessListener(documentSnapshot -> {
-            if (!documentSnapshot.exists()) {
-                userMap.put("Email", USEREMAIL);
-                userMap.put("Username", "");
+    private void AddFieldDoc(){
+        Map<String, Object> HashMap = new HashMap<>();
 
-                userRoute.set(userMap);
+        docUID.get().addOnSuccessListener(documentSnapshot -> {
+            if (!documentSnapshot.exists())
+            {
+                HashMap.put("Email", userEMAIL);
+                HashMap.put("Username", "");
+
+                docUID.set(HashMap);
             }
         });
     }
 
-    private void CekUsername(){
-        DocumentReference userRoute = db.collection("User").document(USERID);
-
-        userRoute.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                String currentUsername = documentSnapshot.getString("Username");
-                if (Objects.requireNonNull(currentUsername).isEmpty())
+    private void GetUser(){
+        docUID.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists())
+            {
+                String s = documentSnapshot.getString("Username");
+                if (!Objects.requireNonNull(s).isEmpty())
                 {
-                    teksUsername.setText(USERNAME);
+                    teksUsername.setText(s);
                 }
                 else
                 {
-                    teksUsername.setText(currentUsername);
+                    teksUsername.setText(userNAME);
                 }
+                teksEmail.setText(userEMAIL);
             }
         });
     }
 
-    private void FetchGrup(){
-        Query grupSort = db.collection("User").document(USERID).collection("Grup");
-
-        grupSort.orderBy("nama").get().addOnCompleteListener(task -> {
+    private void ReadGrup(){
+        collGrup.orderBy("nama").get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
             {
                 grupList.clear();
@@ -124,7 +134,23 @@ public class HomeFragment extends Fragment {
                 grupView.setAdapter(grupAdapter);
             }
         });
-        TeksBelumPunyaGrup();
+        DataGrup();
+    }
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.TeksBelumPunyaGrup)
+    TextView teksBelumPunyaGrup;
+    private void DataGrup() {
+        collGrup.get().addOnSuccessListener(queryDocumentSnapshots ->
+        {
+            if (queryDocumentSnapshots.isEmpty())
+            {
+                teksBelumPunyaGrup.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                teksBelumPunyaGrup.setVisibility(View.GONE);
+            }
+        });
     }
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.GrupView)
@@ -134,14 +160,24 @@ public class HomeFragment extends Fragment {
         grupView.setAdapter(grupAdapter);
     }
 
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.GrupBaru)
+    Button buttonGrupBaru;
+    @SuppressLint("SetTextI18n")
+    private void GrupBaru() {
+        buttonGrupBaru.setOnClickListener(view1 -> {
+            judul = "Masukkan Nama Grup";
+            input = "Nama Grup";
+            error = "Nama Grup Salah!";
+            Dialog();
+        });
+    }
+
     private void ClickGrup() {
         grupView.setOnItemClickListener((adapterView, view, i, l) -> {
             Grup grup = grupAdapter.getItem(i);
             Intent intent = new Intent(getActivity(), GrupActivity.class);
 
-            intent.putExtra(USER_ID, USERID);
-            intent.putExtra(USER_USERNAME, USERNAME);
-            intent.putExtra(USER_EMAIL, USEREMAIL);
             intent.putExtra(NAMA_GRUP, grup.GetNama());
             intent.putExtra(OWNER_GRUP, grup.GetOwner());
             intent.putExtra(ID_GRUP, grup.GetID());
@@ -150,103 +186,62 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.TeksUsername)
-    TextView teksUsername;
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.TeksEmail)
-    TextView teksEmail;
-    private void BindExtra(){
-        Intent intent = requireActivity().getIntent();
-        USERID = intent.getStringExtra(LoginFragment.USER_ID);
-        USERNAME = intent.getStringExtra(LoginFragment.USER_USERNAME);
-        USEREMAIL = intent.getStringExtra(LoginFragment.USER_EMAIL);
-        teksEmail.setText(USEREMAIL);
+    private String judul, input, error;
+    private void Dialog() {
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.dialog);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
 
+        TextView judulDialog = dialog.findViewById(R.id.JudulDialog);
+        EditText inputDialog = dialog.findViewById(R.id.InputDialog);
+        TextView errorDialog = dialog.findViewById(R.id.ErrorDialog);
+        Button btnBatal = dialog.findViewById(R.id.BtnBatal);
+        Button btnKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
 
-        if(USER_ID==null){
-            USERID = intent.getStringExtra(GrupOwnerFragment.USER_ID);
-            USERNAME = intent.getStringExtra(GrupOwnerFragment.USER_USERNAME);
-            USEREMAIL = intent.getStringExtra(GrupOwnerFragment.USER_EMAIL);
-            teksEmail.setText(USEREMAIL);
-        }
-    }
+        judulDialog.setText(judul);
+        inputDialog.setHint(input);
+        errorDialog.setText(error);
+        errorDialog.setVisibility(View.GONE);
 
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.TeksBelumPunyaGrup)
-    TextView teksBelumPunyaGrup;
-    private void TeksBelumPunyaGrup() {
-        CollectionReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup");
-
-        grupOwnerRoute.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            if (queryDocumentSnapshots.isEmpty())
-            {
-                teksBelumPunyaGrup.setVisibility(View.VISIBLE);
+        btnKonfirmasi.setOnClickListener(v -> {
+            String cek = inputDialog.getText().toString();
+            if (cek.isEmpty()){
+                errorDialog.setVisibility(View.VISIBLE);
             }
             else
             {
-                teksBelumPunyaGrup.setVisibility(View.INVISIBLE);
-            }
-        });
-    }
+                Map<String, Object> HashMap = new HashMap<>();
 
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.GrupBaru)
-    Button buttonGrupBaru;
-    @SuppressLint("SetTextI18n")
-    private void GrupBaru() {
-        final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.fragment_home_grupbaru);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        inputGrupBaru = dialog.findViewById(R.id.MasukkanBuatGrupBaru);
-
-        Button buttonKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
-        buttonKonfirmasi.setOnClickListener(view -> {
-            if (!inputGrupBaru.getText().toString().isEmpty())
-            {
-                String namaGrup = inputGrupBaru.getText().toString();
-                DocumentReference grupOwnerRoute = db.collection("User").document(USERID).collection("Grup").document();
-                Map<String, Object> grupOwnerMap = new HashMap<>();
-
-                grupOwnerRoute.get().addOnSuccessListener(documentSnapshot -> {
+                docGID.get().addOnSuccessListener(documentSnapshot -> {
                     if (!documentSnapshot.exists()) {
-                        grupOwnerMap.put("nama", namaGrup);
-                        grupOwnerMap.put("owner", true);
-                        grupOwnerMap.put("id", grupOwnerRoute.getId());
+                        HashMap.put("nama", cek);
+                        HashMap.put("owner", true);
+                        HashMap.put("id", docGID.getId());
 
-                        grupOwnerRoute.set(grupOwnerMap);
-
-                        FetchGrup();
-
-                        teksBelumPunyaGrup.setVisibility(View.INVISIBLE);
+                        docGID.set(HashMap);
+                        //teksBelumPunyaGrup.setVisibility(View.GONE);
                     }
                 });
 
-                DocumentReference grupRoute = db.collection("Grup").document(grupOwnerRoute.getId());
-                Map<String, Object> grupMap = new HashMap<>();
-                grupOwnerRoute.get().addOnSuccessListener(documentSnapshot -> {
+                DocumentReference grupGID = db.collection("Grup").document(docGID.getId());
+                Map<String, Object> HashMap1 = new HashMap<>();
+                docGID.get().addOnSuccessListener(documentSnapshot -> {
                     if (!documentSnapshot.exists()) {
-                        grupMap.put("nama", namaGrup);
-                        grupMap.put("owner", true);
-                        grupMap.put("id", grupRoute.getId());
+                        HashMap1.put("nama", cek);
+                        HashMap1.put("owner", true);
+                        HashMap1.put("id", grupGID.getId());
 
-                        grupRoute.set(grupMap);
+                        grupGID.set(HashMap1);
                     }
                 });
 
+                DataGrup();
                 dialog.dismiss();
             }
-            else
-            {
-                TextView cekGrupBaru = dialog.findViewById(R.id.CekGrupBaru);
-                cekGrupBaru.setText("Nama Grup Tidak Boleh Kosong!");
-                cekGrupBaru.setVisibility(View.VISIBLE);
-            }
         });
 
-        Button buttonTutup = dialog.findViewById(R.id.BtnBatal);
-        buttonTutup.setOnClickListener(v -> dialog.dismiss());
+        btnBatal.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
