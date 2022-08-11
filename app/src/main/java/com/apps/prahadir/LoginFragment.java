@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,7 +148,7 @@ public class LoginFragment extends Fragment {
 
                     Intent intent=new Intent(getActivity(), MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    String currentID = mUser.getUid();
+                    String currentID = mUser.getUid();;
                     String currentUsername = mUser.getEmail();
                     String currentEmail = mUser.getEmail();
                     intent.putExtra(USER_ID, currentID);

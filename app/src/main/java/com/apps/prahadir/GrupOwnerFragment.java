@@ -79,7 +79,6 @@ public class GrupOwnerFragment extends Fragment {
         buttonDataBaru.setOnClickListener(view1 -> DataBaru());
         back.setOnClickListener(view2 -> Back());
 
-
         return view;
     }
 
@@ -126,10 +125,10 @@ public class GrupOwnerFragment extends Fragment {
         dataView.setAdapter(dataAdapter);
     }
     private void ClickData() {
-
         dataView.setOnItemClickListener((adapterView, view, i, l) -> {
             Data data = dataAdapter.getItem(i);
-            Log.d("debugggg","a");
+
+            Log.d("debugggg",data.GetNama());
             Toast.makeText(getContext(), "Button Clicked ", Toast.LENGTH_SHORT).show();
         });
     }
