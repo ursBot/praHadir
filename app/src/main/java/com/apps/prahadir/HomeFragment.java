@@ -34,12 +34,15 @@ import butterknife.ButterKnife;
 public class HomeFragment extends Fragment {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
     private final String userID = Objects.requireNonNull(mUser).getUid();
     private final String userNAME = mUser.getEmail();
     private final String userEMAIL = mUser.getEmail();
+
+    DocumentReference docUID = db.collection("User").document(userID);
+    CollectionReference collGrup = docUID.collection("Grup");
+    DocumentReference docGID = collGrup.document();
 
     public static final String USER_ID = "UserID";
     public static final String USER_USERNAME = "UserID";
@@ -50,10 +53,6 @@ public class HomeFragment extends Fragment {
 
     private GrupAdapter grupAdapter;
     private final ArrayList<Grup> grupList = new ArrayList<>();
-
-    DocumentReference docUID = db.collection("User").document(userID);
-    CollectionReference collGrup = docUID.collection("Grup");
-    DocumentReference docGID = collGrup.document();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -88,7 +87,6 @@ public class HomeFragment extends Fragment {
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.TeksUsername)
     TextView teksUsername;
-
     private void AddFieldDoc(){
         Map<String, Object> HashMap = new HashMap<>();
 
@@ -100,6 +98,7 @@ public class HomeFragment extends Fragment {
 
                 docUID.set(HashMap);
             }
+            GetUser();
         });
     }
 
@@ -220,7 +219,7 @@ public class HomeFragment extends Fragment {
                         HashMap.put("id", docGID.getId());
 
                         docGID.set(HashMap);
-                        //teksBelumPunyaGrup.setVisibility(View.GONE);
+                        teksBelumPunyaGrup.setVisibility(View.GONE);
                     }
                 });
 
@@ -236,7 +235,7 @@ public class HomeFragment extends Fragment {
                     }
                 });
 
-                DataGrup();
+                ReadGrup();
                 dialog.dismiss();
             }
         });

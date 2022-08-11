@@ -6,20 +6,22 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -28,8 +30,16 @@ import butterknife.ButterKnife;
 public class ProfileFragment extends Fragment {
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private String USERID, USERNAME, USEREMAIL;
-    private FirebaseAuth mAuth;
+    FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+    private final String userID = Objects.requireNonNull(mUser).getUid();
+    private final String userNAME = mUser.getEmail();
+    private final String userEMAIL = mUser.getEmail();
+
+    DocumentReference docUID = db.collection("User").document(userID);
+
+    private String judul, input, error;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -48,11 +58,7 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, view);
 
-        BindExtra();
-        MakeColecction();
-        CekUsername();
-
-        mAuth = FirebaseAuth.getInstance();
+        GetUser();
 
         buttonUbahUsername.setOnClickListener(view1 -> UbahUsername());
         buttonUbahPassword.setOnClickListener(view1 -> UbahPassword());
@@ -62,50 +68,28 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
-    private void MakeColecction(){
-        DocumentReference userRoute = db.collection("User").document(USERID);
-        Map<String, Object> userMap = new HashMap<>();
-
-        userRoute.get().addOnSuccessListener(documentSnapshot -> {
-            if (!documentSnapshot.exists()) {
-                userMap.put("Email", USEREMAIL);
-                userMap.put("Username", "");
-
-                userRoute.set(userMap);
-            }
-        });
-    }
-
-    private void CekUsername(){
-        DocumentReference userRoute = db.collection("User").document(USERID);
-
-        userRoute.get().addOnSuccessListener(documentSnapshot -> {
-            if (documentSnapshot.exists()) {
-                String currentUsername = documentSnapshot.getString("Username");
-                if (Objects.requireNonNull(currentUsername).isEmpty())
-                {
-                    teksUsername.setText(USERNAME);
-                }
-                else
-                {
-                    teksUsername.setText(currentUsername);
-                }
-            }
-        });
-    }
-
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.TeksUsername)
     TextView teksUsername;
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.TeksEmail)
     TextView teksEmail;
-    private void BindExtra(){
-        Intent intent = requireActivity().getIntent();
-        USERID = intent.getStringExtra(LoginFragment.USER_ID);
-        USERNAME = intent.getStringExtra(LoginFragment.USER_USERNAME);
-        USEREMAIL = intent.getStringExtra(LoginFragment.USER_EMAIL);
-        teksEmail.setText(USEREMAIL);
+    private void GetUser(){
+        docUID.get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists())
+            {
+                String s = documentSnapshot.getString("Username");
+                if (!Objects.requireNonNull(s).isEmpty())
+                {
+                    teksUsername.setText(s);
+                }
+                else
+                {
+                    teksUsername.setText(userNAME);
+                }
+                teksEmail.setText(userEMAIL);
+            }
+        });
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -113,14 +97,39 @@ public class ProfileFragment extends Fragment {
     Button buttonUbahUsername;
     private void UbahUsername() {
         final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.fragment_profile_username);
+        dialog.setContentView(R.layout.dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        Button buttonKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
-        buttonKonfirmasi.setOnClickListener(v -> dialog.dismiss());
+        judul = "Masukkan Username Baru";
+        input = "Username Baru";
+        error = "Username Salah!";
 
-        Button buttonTutup = dialog.findViewById(R.id.BtnBatal);
-        buttonTutup.setOnClickListener(v -> dialog.dismiss());
+        TextView judulDialog = dialog.findViewById(R.id.JudulDialog);
+        EditText inputDialog = dialog.findViewById(R.id.InputDialog);
+        TextView errorDialog = dialog.findViewById(R.id.ErrorDialog);
+        Button btnBatal = dialog.findViewById(R.id.BtnBatal);
+        Button btnKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
+
+        judulDialog.setText(judul);
+        inputDialog.setHint(input);
+        errorDialog.setText(error);
+        errorDialog.setVisibility(View.GONE);
+
+        btnKonfirmasi.setOnClickListener(v -> {
+            String cek = inputDialog.getText().toString();
+            if (cek.isEmpty()){
+                errorDialog.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                docUID.update("Username", cek);
+                Toast.makeText(getActivity(), "Username Berhasil Dirubah", Toast.LENGTH_SHORT).show();
+                GetUser();
+
+                dialog.dismiss();
+            }
+        });
+        btnBatal.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
@@ -130,14 +139,43 @@ public class ProfileFragment extends Fragment {
     Button buttonUbahPassword;
     private void UbahPassword() {
         final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.fragment_profile_password);
+        dialog.setContentView(R.layout.dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        Button buttonKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
-        buttonKonfirmasi.setOnClickListener(v -> dialog.dismiss());
+        judul = "Masukkan Password Baru";
+        input = "Password Baru";
+        error = "Password Salah!";
 
-        Button buttonTutup = dialog.findViewById(R.id.BtnBatal);
-        buttonTutup.setOnClickListener(v -> dialog.dismiss());
+        TextView judulDialog = dialog.findViewById(R.id.JudulDialog);
+        EditText inputDialog = dialog.findViewById(R.id.InputDialog);
+        TextView errorDialog = dialog.findViewById(R.id.ErrorDialog);
+        Button btnBatal = dialog.findViewById(R.id.BtnBatal);
+        Button btnKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
+
+        judulDialog.setText(judul);
+        inputDialog.setHint(input);
+        inputDialog.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        errorDialog.setText(error);
+        errorDialog.setVisibility(View.GONE);
+
+        btnKonfirmasi.setOnClickListener(v -> {
+            String cek = inputDialog.getText().toString();
+            if (cek.isEmpty() || cek.length()<6){
+                errorDialog.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                mUser.updatePassword(cek)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(getActivity(), "Password Berhasil Dirubah", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                dialog.dismiss();
+            }
+        });
+        btnBatal.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
@@ -146,15 +184,20 @@ public class ProfileFragment extends Fragment {
     @BindView(R.id.Logout)
     Button buttonLogout;
     private void ButtonLogout() {
+
         final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.fragment_profile_logout);
+        dialog.setContentView(R.layout.dialog);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
-        Button buttonKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
-        buttonKonfirmasi.setOnClickListener(view -> Logout());
+        TextView judulDialog = dialog.findViewById(R.id.JudulDialog);
+        judul = "Apakah Anda Akan Keluar?";
+        judulDialog.setText(judul);
 
-        Button buttonTutup = dialog.findViewById(R.id.BtnBatal);
-        buttonTutup.setOnClickListener(v -> dialog.dismiss());
+        Button btnBatal = dialog.findViewById(R.id.BtnBatal);
+        Button btnKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
+
+        btnKonfirmasi.setOnClickListener(view -> Logout());
+        btnBatal.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
@@ -171,12 +214,11 @@ public class ProfileFragment extends Fragment {
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.fragment_profile_about_apps);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.setCanceledOnTouchOutside(false);
 
         Button buttonKonfirmasi = dialog.findViewById(R.id.BtnKonfirmasi);
-
         buttonKonfirmasi.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }
-
 }
