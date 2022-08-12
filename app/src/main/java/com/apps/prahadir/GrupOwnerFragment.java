@@ -69,6 +69,7 @@ public class GrupOwnerFragment extends Fragment {
 
     private DataAdapter dataAdapter;
     private final ArrayList<Data> dataList = new ArrayList<>();
+    private final ArrayList<String> dataChecked = new ArrayList<String>();
 
     private AbsenAdapter absenAdapter;
     private final ArrayList<Absen> absenList = new ArrayList<>();
@@ -98,14 +99,17 @@ public class GrupOwnerFragment extends Fragment {
 
         Tanggal();
         Back();
+
         ReadData();
         DataViewOwner();
         DataBaru();
         ClickData();
 
-        //FetchAbsen();
-        //AbsenView();
-        //buttonAbsenBaru.setOnClickListener(view1 -> AbsenBaru());
+        buttonAbsenBaru.setEnabled(false);
+        ReadAbsen();
+        AbsenView();
+        AbsenBaru();
+        //ClickAbsen();
 
         return view;
     }
@@ -154,6 +158,7 @@ public class GrupOwnerFragment extends Fragment {
         });
         DataKosong();
     }
+
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.DataKosong)
     TextView teksDataKosong;
@@ -166,7 +171,7 @@ public class GrupOwnerFragment extends Fragment {
             }
             else
             {
-                teksDataKosong.setVisibility(View.INVISIBLE);
+                teksDataKosong.setVisibility(View.GONE);
             }
         });
     }
@@ -224,7 +229,6 @@ public class GrupOwnerFragment extends Fragment {
 
                             teksDataKosong.setVisibility(View.GONE);
                             ReadData();
-                            Log.d("debugggg", "asu");
                         }
                     });
                     Toast.makeText(getActivity(), "Berhasil Menambah Data", Toast.LENGTH_SHORT).show();
@@ -249,6 +253,25 @@ public class GrupOwnerFragment extends Fragment {
 
             dataList.set(i, data);
             dataAdapter.updateRecords(dataList);
+
+            dataChecked.clear();
+            for (int j=0; j<dataList.size(); j++){
+                if (String.valueOf(dataList.get(j).GetSelected()).equals("true")){
+                    dataChecked.add(dataList.get(j).GetNama());
+                }
+                else
+                {
+                    dataChecked.remove(dataList.get(j).GetNama());
+                }
+            }
+
+            if (dataChecked.size()==0){
+                buttonAbsenBaru.setEnabled(false);
+            }
+            else
+            {
+                buttonAbsenBaru.setEnabled(true);
+            }
 
             Toast.makeText(getActivity(), data.GetNama()+" check", Toast.LENGTH_SHORT).show();
         });
@@ -282,31 +305,24 @@ public class GrupOwnerFragment extends Fragment {
         });
     }
 
-    private void FetchAbsen(){
-        collAbsen.orderBy("tanggal").get().addOnCompleteListener(task -> {
+    private void ReadAbsen(){
+        collAbsen.orderBy("Tanggal").get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
             {
                 absenList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    absenList.add(new Absen(document.getString("tanggal")));
+                    absenList.add(new Absen(document.getString("Tanggal")));
                 }
                 absenView.setAdapter(absenAdapter);
             }
         });
-        TeksBelumPunyaAbsen();
-    }
-    @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.AbsensiView)
-    ListView absenView;
-    private void AbsenView() {
-        absenAdapter = new AbsenAdapter(this, absenList);
-        absenView.setAdapter(absenAdapter);
+        AbsenKosong();
     }
 
     @SuppressLint("NonConstantResourceId")
-    @BindView(R.id.AbsensiKosong)
+    @BindView(R.id.AbsenKosong)
     TextView teksBelumPunyaAbsen;
-    private void TeksBelumPunyaAbsen() {
+    private void AbsenKosong() {
         collAbsen.get().addOnSuccessListener(queryDocumentSnapshots -> {
             if (queryDocumentSnapshots.isEmpty())
             {
@@ -314,9 +330,16 @@ public class GrupOwnerFragment extends Fragment {
             }
             else
             {
-                teksBelumPunyaAbsen.setVisibility(View.INVISIBLE);
+                teksBelumPunyaAbsen.setVisibility(View.GONE);
             }
         });
+    }
+    @SuppressLint("NonConstantResourceId")
+    @BindView(R.id.AbsenView)
+    ListView absenView;
+    private void AbsenView() {
+        absenAdapter = new AbsenAdapter(this, absenList);
+        absenView.setAdapter(absenAdapter);
     }
 
     @SuppressLint("NonConstantResourceId")
@@ -324,8 +347,8 @@ public class GrupOwnerFragment extends Fragment {
     Button buttonAbsenBaru;
     @SuppressLint("SetTextI18n")
     private void AbsenBaru() {
-
-        buttonAbsenBaru.setOnClickListener(view -> {
+        buttonAbsenBaru.setOnClickListener(view ->
+        {
             String tgl = tanggal.getText().toString();
 
             Map<String, Object> tglMap = new HashMap<>();
@@ -336,9 +359,9 @@ public class GrupOwnerFragment extends Fragment {
 
                     docAID.set(tglMap);
 
-                    FetchAbsen();
+                    ReadAbsen();
 
-                    teksBelumPunyaAbsen.setVisibility(View.INVISIBLE);
+                    teksBelumPunyaAbsen.setVisibility(View.GONE);
                 }
             });
 

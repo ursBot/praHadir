@@ -237,16 +237,19 @@
                     android:layout_marginBottom="10dp">
 
                     <ListView
-                        android:id="@+id/AbsensiView"
+                        android:id="@+id/AbsenView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         android:visibility="visible"
-                        android:dividerHeight="10dp"/>
+                        android:dividerHeight="10dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:scrollingCache="false"/>
 
                     <TextView
-                        android:id="@+id/AbsensiKosong"
+                        android:id="@+id/AbsenKosong"
                         style="@style/belum"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
