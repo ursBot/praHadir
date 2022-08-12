@@ -9,10 +9,10 @@
         android:id="@+id/loginFragment"
         android:name="com.apps.prahadir.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login_login" />
     <fragment
         android:id="@+id/daftarFragment"
         android:name="com.apps.prahadir.DaftarFragment"
         android:label="fragment_daftar"
-        tools:layout="@layout/fragment_daftar" />
+        tools:layout="@layout/fragment_login_daftar" />
 </navigation>

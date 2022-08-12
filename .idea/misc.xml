@@ -22,6 +22,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/ic_people.xml" value="0.1375" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/ic_refresh.xml" value="0.1375" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/drawable/ic_tambah_orange.xml" value="0.128" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/activity_absen.xml" value="0.1947463768115942" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/activity_absensi.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/activity_grup.xml" value="0.1947463768115942" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/activity_home.xml" value="0.17074275362318841" />
@@ -51,6 +52,7 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_absensi.xml" value="0.25" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_data.xml" value="0.67" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_grup.xml" value="0.5" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_grup_tanggal.xml" value="0.1947463768115942" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_kantor.xml" value="0.67" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_karyawan.xml" value="0.5" />
         <entry key="..\:/Users/User/AndroidStudioProjects/praHadir/app/src/main/res/layout/list_option.xml" value="0.33" />

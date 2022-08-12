@@ -47,7 +47,7 @@ public class DataAdapter extends BaseAdapter {
         final ViewHolder holder;
         if (view == null) {
             holder = new ViewHolder();
-            view = inflater.inflate(R.layout.list_data, null);
+            view = inflater.inflate(R.layout.list_grup_data, null);
 
             holder.nama = (TextView) view.findViewById(R.id.NamaData);
             holder.check = (CheckBox) view.findViewById(R.id.CheckboxData);

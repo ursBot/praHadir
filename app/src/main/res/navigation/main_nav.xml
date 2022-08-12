@@ -9,10 +9,10 @@
         android:id="@+id/homeFragment"
         android:name="com.apps.prahadir.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_main_home" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.apps.prahadir.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_main_profile" />
 </navigation>

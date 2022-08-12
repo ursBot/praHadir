@@ -44,16 +44,20 @@ public class AbsenAdapter extends BaseAdapter {
         final ViewHolder holder;
         if (view == null) {
             holder = new ViewHolder();
-            view = inflater.inflate(R.layout.list_tanggalabsen, null);
+            view = inflater.inflate(R.layout.list_grup_tanggal, null);
 
             holder.tanggal = (TextView) view.findViewById(R.id.TanggalAbsen);
-            holder.tanggal.setText(absenSet.get(position).GetTanggal());
-
             holder.hapus = (View) view.findViewById(R.id.Hapus);
-            holder.hapus.setOnClickListener(view1 -> Toast.makeText(view1.getContext(), "Button Clicked "+position, Toast.LENGTH_SHORT).show());
 
             view.setTag(holder);
         }
+        else
+        {
+            holder = (AbsenAdapter.ViewHolder) view.getTag();
+        }
+
+        holder.tanggal.setText(absenSet.get(position).GetTanggal());
+        holder.hapus.setOnClickListener(view1 -> Toast.makeText(view1.getContext(), "Button Clicked "+position, Toast.LENGTH_SHORT).show());
 
         return view;
     }

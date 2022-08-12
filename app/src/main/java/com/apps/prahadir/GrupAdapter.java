@@ -45,12 +45,10 @@ public class GrupAdapter extends BaseAdapter {
         final ViewHolder holder;
         if (view == null) {
             holder = new ViewHolder();
-            view = inflater.inflate(R.layout.list_grup, null);
+            view = inflater.inflate(R.layout.list_main_grup, null);
 
             holder.nama = view.findViewById(R.id.NamaGrup);
-
             holder.owner = view.findViewById(R.id.LabelOwner);
-
             holder.option = view.findViewById(R.id.ButtonOption);
 
             view.setTag(holder);
@@ -59,6 +57,8 @@ public class GrupAdapter extends BaseAdapter {
         {
             holder = (ViewHolder) view.getTag();
         }
+        Grup grup = grupSet.get(position);
+
         holder.nama.setText(grupSet.get(position).GetNama());
 
         return view;

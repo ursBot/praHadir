@@ -74,8 +74,6 @@ public class GrupOwnerFragment extends Fragment {
     private AbsenAdapter absenAdapter;
     private final ArrayList<Absen> absenList = new ArrayList<>();
 
-    Map<String, Object> HashMap = new HashMap<>();
-
     public GrupOwnerFragment() {
         // Required empty public constructor
     }
@@ -109,7 +107,7 @@ public class GrupOwnerFragment extends Fragment {
         ReadAbsen();
         AbsenView();
         AbsenBaru();
-        //ClickAbsen();
+        ClickAbsen();
 
         return view;
     }
@@ -223,6 +221,7 @@ public class GrupOwnerFragment extends Fragment {
                     docDID = collData.document();
                     docDID.get().addOnSuccessListener(documentSnapshot -> {
                         if (!documentSnapshot.exists()) {
+                            Map<String, Object> HashMap = new HashMap<>();
                             HashMap.put("Nama", cek);
                             docDID.set(HashMap);
                             dbData.set(HashMap);
@@ -350,29 +349,33 @@ public class GrupOwnerFragment extends Fragment {
         buttonAbsenBaru.setOnClickListener(view ->
         {
             String tgl = tanggal.getText().toString();
+            Map<String, Object> HashMap = new HashMap<>();
 
-            Map<String, Object> tglMap = new HashMap<>();
-
+            docAID = collAbsen.document();
             docAID.get().addOnSuccessListener(documentSnapshot -> {
                 if (!documentSnapshot.exists()) {
-                    tglMap.put("Tanggal", tgl);
+                    HashMap.put("Tanggal", tgl);
 
-                    docAID.set(tglMap);
-
-                    ReadAbsen();
+                    docAID.set(HashMap);
+                    dbAbsen.set(HashMap);
 
                     teksBelumPunyaAbsen.setVisibility(View.GONE);
+                    ReadAbsen();
                 }
             });
+            Toast.makeText(getActivity(), "Berhasil Menambah Absen", Toast.LENGTH_SHORT).show();
+        });
+    }
 
-            Map<String, Object> tglIDMap = new HashMap<>();
-            dbAbsen.get().addOnSuccessListener(documentSnapshot -> {
-                if (!documentSnapshot.exists()) {
-                    tglIDMap.put("Taggal", tgl);
+    private void ClickAbsen() {
+        absenView.setOnItemClickListener((adapterView, view, i, l) -> {
+            Absen absen = absenAdapter.getItem(i);
+            Intent intent = new Intent(getActivity(), AbsenActivity.class);
 
-                    dbAbsen.set(tglIDMap);
-                }
-            });
+            intent.putExtra(NAMA_GRUP, grupNAMA);
+
+            startActivity(intent);
+            Toast.makeText(getActivity(), "Tanggal "+absen.GetTanggal(), Toast.LENGTH_SHORT).show();
         });
     }
 }

@@ -55,7 +55,7 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_main_profile, container, false);
         ButterKnife.bind(this, view);
 
         GetUser();
@@ -212,7 +212,7 @@ public class ProfileFragment extends Fragment {
     Button buttonTentangAplikasi;
     private void AboutApps() {
         final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.fragment_profile_about_apps);
+        dialog.setContentView(R.layout.fragment_main_profile_about);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCanceledOnTouchOutside(false);
 
