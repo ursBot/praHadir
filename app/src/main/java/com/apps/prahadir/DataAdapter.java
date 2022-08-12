@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DataAdapter extends BaseAdapter {
 
-    private final List<Data> dataSet;
+    private List<Data> dataSet;
 
     private final LayoutInflater inflater;
 
@@ -59,12 +59,19 @@ public class DataAdapter extends BaseAdapter {
         {
             holder = (DataAdapter.ViewHolder) view.getTag();
         }
+        Data data = dataSet.get(position);
+
         holder.nama.setText(dataSet.get(position).GetNama());
+        holder.check.setChecked(data.GetSelected());
         holder.option.setOnClickListener(view1 -> Toast.makeText(view1.getContext(), dataSet.get(position).GetNama()+position, Toast.LENGTH_SHORT).show());
 
         return view;
     }
+    public void updateRecords(List<Data> dataList){
+        this.dataSet = dataList;
 
+        notifyDataSetChanged();
+    }
     private static class ViewHolder {
         TextView nama;
         CheckBox check;

@@ -147,7 +147,7 @@ public class GrupOwnerFragment extends Fragment {
             {
                 dataList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    dataList.add(new Data(document.getString("Nama")));
+                    dataList.add(new Data(document.getString("Nama"), false));
                 }
                 dataViewOwner.setAdapter(dataAdapter);
             }
@@ -237,10 +237,20 @@ public class GrupOwnerFragment extends Fragment {
 
     private void ClickData() {
         dataViewOwner.setOnItemClickListener((adapterView, view, i, l) -> {
-            Log.d("debugggg", "TES");
             Data data = dataAdapter.getItem(i);
 
-            Toast.makeText(getActivity(), data.GetNama(), Toast.LENGTH_SHORT).show();
+            if (data.GetSelected()){
+                data.SetSelected(false);
+            }
+            else
+            {
+                data.SetSelected(true);
+            }
+
+            dataList.set(i, data);
+            dataAdapter.updateRecords(dataList);
+
+            Toast.makeText(getActivity(), data.GetNama()+" check", Toast.LENGTH_SHORT).show();
         });
     }
 
