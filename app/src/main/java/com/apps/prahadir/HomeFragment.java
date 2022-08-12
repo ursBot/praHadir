@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -42,11 +43,10 @@ public class HomeFragment extends Fragment {
 
     DocumentReference docUID = db.collection("User").document(userID);
     CollectionReference collGrup = docUID.collection("Grup");
-    DocumentReference docGID = collGrup.document();
+    DocumentReference docGID;
+    DocumentReference dbGrup;
 
-    public static final String USER_ID = "UserID";
-    public static final String USER_USERNAME = "UserID";
-    public static final String USER_EMAIL = "UserID";
+    public static final String NAMA_USER = "NamaUSER";
     public static final String NAMA_GRUP = "NamaGrup";
     public static final String ID_GRUP = "IDGrup";
     public static final String OWNER_GRUP = "OwnerGrup";
@@ -88,11 +88,10 @@ public class HomeFragment extends Fragment {
     @BindView(R.id.TeksUsername)
     TextView teksUsername;
     private void AddFieldDoc(){
-        Map<String, Object> HashMap = new HashMap<>();
-
         docUID.get().addOnSuccessListener(documentSnapshot -> {
             if (!documentSnapshot.exists())
             {
+                Map<String, Object> HashMap = new HashMap<>();
                 HashMap.put("Email", userEMAIL);
                 HashMap.put("Username", "");
 
@@ -121,33 +120,33 @@ public class HomeFragment extends Fragment {
     }
 
     private void ReadGrup(){
-        collGrup.orderBy("nama").get().addOnCompleteListener(task -> {
+        collGrup.orderBy("Nama").get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
             {
                 grupList.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    grupList.add(new Grup(document.getString("nama"),
-                            Objects.requireNonNull(document.getBoolean("owner")).toString(),
-                            document.getString("id")));
+                    grupList.add(new Grup(document.getString("Nama"),
+                            Objects.requireNonNull(document.getBoolean("Owner")).toString(),
+                            document.getString("ID")));
                 }
                 grupView.setAdapter(grupAdapter);
             }
         });
-        DataGrup();
+        GrupKosong();
     }
     @SuppressLint("NonConstantResourceId")
     @BindView(R.id.TeksBelumPunyaGrup)
-    TextView teksBelumPunyaGrup;
-    private void DataGrup() {
+    TextView grupKosong;
+    private void GrupKosong() {
         collGrup.get().addOnSuccessListener(queryDocumentSnapshots ->
         {
             if (queryDocumentSnapshots.isEmpty())
             {
-                teksBelumPunyaGrup.setVisibility(View.VISIBLE);
+                grupKosong.setVisibility(View.VISIBLE);
             }
             else
             {
-                teksBelumPunyaGrup.setVisibility(View.GONE);
+                grupKosong.setVisibility(View.GONE);
             }
         });
     }
@@ -169,6 +168,9 @@ public class HomeFragment extends Fragment {
             input = "Nama Grup";
             error = "Nama Grup Salah!";
             Dialog();
+
+            grupKosong.setVisibility(View.GONE);
+            ReadGrup();
         });
     }
 
@@ -177,11 +179,22 @@ public class HomeFragment extends Fragment {
             Grup grup = grupAdapter.getItem(i);
             Intent intent = new Intent(getActivity(), GrupActivity.class);
 
+            docUID.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists())
+                {
+                    String s = documentSnapshot.getString("Username");
+                    if (!Objects.requireNonNull(s).isEmpty())
+                    {
+                        intent.putExtra(NAMA_USER, s);
+                    }
+                }
+            });
             intent.putExtra(NAMA_GRUP, grup.GetNama());
             intent.putExtra(OWNER_GRUP, grup.GetOwner());
             intent.putExtra(ID_GRUP, grup.GetID());
 
             startActivity(intent);
+            Toast.makeText(getActivity(), "Grup "+grup.GetNama(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -203,6 +216,7 @@ public class HomeFragment extends Fragment {
         errorDialog.setText(error);
         errorDialog.setVisibility(View.GONE);
 
+        btnBatal.setOnClickListener(v -> dialog.dismiss());
         btnKonfirmasi.setOnClickListener(v -> {
             String cek = inputDialog.getText().toString();
             if (cek.isEmpty()){
@@ -210,37 +224,26 @@ public class HomeFragment extends Fragment {
             }
             else
             {
-                Map<String, Object> HashMap = new HashMap<>();
+                docGID = collGrup.document();
+                dbGrup = db.collection("Grup").document(docGID.getId());
 
                 docGID.get().addOnSuccessListener(documentSnapshot -> {
                     if (!documentSnapshot.exists()) {
-                        HashMap.put("nama", cek);
-                        HashMap.put("owner", true);
-                        HashMap.put("id", docGID.getId());
-
+                        Map<String, Object> HashMap = new HashMap<>();
+                        HashMap.put("Nama", cek);
+                        HashMap.put("Owner", true);
+                        HashMap.put("ID", docGID.getId());
                         docGID.set(HashMap);
-                        teksBelumPunyaGrup.setVisibility(View.GONE);
+                        dbGrup.set(HashMap);
+
+                        grupKosong.setVisibility(View.GONE);
+                        ReadGrup();
                     }
                 });
-
-                DocumentReference grupGID = db.collection("Grup").document(docGID.getId());
-                Map<String, Object> HashMap1 = new HashMap<>();
-                docGID.get().addOnSuccessListener(documentSnapshot -> {
-                    if (!documentSnapshot.exists()) {
-                        HashMap1.put("nama", cek);
-                        HashMap1.put("owner", true);
-                        HashMap1.put("id", grupGID.getId());
-
-                        grupGID.set(HashMap1);
-                    }
-                });
-
-                ReadGrup();
                 dialog.dismiss();
             }
+            Toast.makeText(getActivity(), "Grup "+cek+" Berhasil Dibuat!", Toast.LENGTH_SHORT).show();
         });
-
-        btnBatal.setOnClickListener(v -> dialog.dismiss());
 
         dialog.show();
     }

@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -48,16 +47,19 @@ public class GrupAdapter extends BaseAdapter {
             holder = new ViewHolder();
             view = inflater.inflate(R.layout.list_grup, null);
 
-            holder.nama = (TextView) view.findViewById(R.id.NamaGrup);
-            holder.nama.setText(grupSet.get(position).GetNama());
+            holder.nama = view.findViewById(R.id.NamaGrup);
 
-            holder.owner = (TextView) view.findViewById(R.id.LabelOwner);
+            holder.owner = view.findViewById(R.id.LabelOwner);
 
-            holder.option = (ConstraintLayout) view.findViewById(R.id.ButtonOption);
-            holder.option.setOnClickListener(view1 -> Toast.makeText(view1.getContext(), "Button Clicked "+position, Toast.LENGTH_SHORT).show());
+            holder.option = view.findViewById(R.id.ButtonOption);
 
             view.setTag(holder);
         }
+        else
+        {
+            holder = (ViewHolder) view.getTag();
+        }
+        holder.nama.setText(grupSet.get(position).GetNama());
 
         return view;
     }

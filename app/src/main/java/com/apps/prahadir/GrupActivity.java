@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -15,7 +16,7 @@ import com.apps.prahadir.databinding.ActivityGrupBinding;
 
 public class GrupActivity extends AppCompatActivity {
 
-    private String USERID, GRUPNAMA, GRUPOWNER, GRUPID;
+    private String GRUPOWNER;
 
     ActivityGrupBinding binding;
     @SuppressLint("NonConstantResourceId")
@@ -28,7 +29,6 @@ public class GrupActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         BindExtra();
-        CheckOwner();
     }
 
     private void HideActionBar() {
@@ -47,10 +47,8 @@ public class GrupActivity extends AppCompatActivity {
 
     private void BindExtra(){
         Intent intent = getIntent();
-        USERID = intent.getStringExtra(HomeFragment.USER_ID);
-        GRUPNAMA = intent.getStringExtra(HomeFragment.NAMA_GRUP);
         GRUPOWNER = intent.getStringExtra(HomeFragment.OWNER_GRUP);
-        GRUPID = intent.getStringExtra(HomeFragment.ID_GRUP);
+        CheckOwner();
     }
 
     private void CheckOwner() {

@@ -50,15 +50,17 @@ public class DataAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.list_data, null);
 
             holder.nama = (TextView) view.findViewById(R.id.NamaData);
-            holder.nama.setText(dataSet.get(position).GetNama());
-
             holder.check = (CheckBox) view.findViewById(R.id.CheckboxData);
-
             holder.option = (ConstraintLayout) view.findViewById(R.id.ButtonOption);
-            holder.option.setOnClickListener(view1 -> Toast.makeText(view1.getContext(), "Button Clicked "+position, Toast.LENGTH_SHORT).show());
 
             view.setTag(holder);
         }
+        else
+        {
+            holder = (DataAdapter.ViewHolder) view.getTag();
+        }
+        holder.nama.setText(dataSet.get(position).GetNama());
+        holder.option.setOnClickListener(view1 -> Toast.makeText(view1.getContext(), dataSet.get(position).GetNama()+position, Toast.LENGTH_SHORT).show());
 
         return view;
     }

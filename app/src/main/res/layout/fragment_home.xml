@@ -95,7 +95,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:visibility="visible"
-                android:dividerHeight="10dp"/>
+                android:dividerHeight="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:scrollingCache="false"/>
 
             <TextView
                 android:id="@+id/TeksBelumPunyaGrup"
