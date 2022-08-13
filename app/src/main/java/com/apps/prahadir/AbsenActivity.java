@@ -40,6 +40,5 @@ public class AbsenActivity extends AppCompatActivity {
         Intent intent = getIntent();
         grupNAMA = intent.getStringExtra(GrupOwnerFragment.NAMA_GRUP);
         namaGrup.setText(grupNAMA);
-        Log.d("debugggg grupNAMA ", grupNAMA);
     }
 }

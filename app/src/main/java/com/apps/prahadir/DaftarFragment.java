@@ -72,8 +72,8 @@ public class DaftarFragment extends Fragment {
     @BindView(R.id.MasukkanPassword)
     EditText inputPassword;
     private void Auth() {
-        String email=inputEmail.getText().toString();
-        String password=inputPassword.getText().toString();
+        String email = inputEmail.getText().toString();
+        String password = inputPassword.getText().toString();
 
         if (email.isEmpty() || email.length()<6){
             showErorr(inputEmail, "Email Salah, silahkan diisi ulang!");
@@ -96,7 +96,6 @@ public class DaftarFragment extends Fragment {
                 else
                 {
                     Toast.makeText(getActivity(), Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
-                    mLoadingBar.dismiss();
                 }
                 mLoadingBar.dismiss();
             });
